@@ -4,21 +4,13 @@ output:
   html_document:
     toc: true
     toc_float: true
-
 ---
 
 ### Bio
 
-Hi! I’m Angelica Bailey, an M.S. student in Biostatistics at Columbia University’s Mailman School of Public Health, focusing on Public Health Data Science.
+Hi! I’m Angelica Bailey, an M.S. student in Biostatistics at Columbia University’s Mailman School of Public Health, focusing on Public Health Data Science. I completed my Bachelor's in Statistics with a minor in Computer Science at Hunter College.
+
+### Professional Experience
 
 
-
-
-
-
-
-
-
-
-
-
+### Projects

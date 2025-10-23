@@ -9,10 +9,12 @@ output:
 
 ## Welcome!
 
-<img src="images/photo.jpeg" style="width:75%">
+<img src="images/photo.jpeg" style="height:40%;width:50%;">
 
 
 [About me](about.html)
+
+
 
 
 
