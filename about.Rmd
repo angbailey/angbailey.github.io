@@ -7,4 +7,18 @@ output:
 
 ---
 
+### Bio
+
+Hi! I’m Angelica Bailey, an M.S. student in Biostatistics at Columbia University’s Mailman School of Public Health, focusing on Public Health Data Science.
+
+
+
+
+
+
+
+
+
+
+
 

@@ -7,15 +7,16 @@ output:
 
 ---
 
-## Welcome to my website!
+## Welcome!
 
 <img src="images/photo.jpeg" style="width:75%">
 
-Introduction
-
-
 
 [About me](about.html)
+
+
+
+
 
 
 
