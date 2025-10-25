@@ -1,5 +1,5 @@
 ---
-title: "Angelica Bailey Personal Website"
+title: "Angelica Bailey"
 output: 
   html_document:
     toc: true
@@ -12,7 +12,7 @@ output:
 <img src="images/photo.jpeg" style="height:40%;width:50%;">
 
 
-[About me](about.html)
+### [About me](about.html)
 
 
 
