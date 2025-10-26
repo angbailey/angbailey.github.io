@@ -19,7 +19,7 @@ data("instacart")
 ```
 
 
-Column {data-width=650}
+Column {data-width=600}
 -----------------------------------------------------------------------
 
 ### Chart A
@@ -32,27 +32,29 @@ sample_users = instacart |>
 
 sample_data = instacart |> 
   semi_join(sample_users, by = "user_id")
-  
+
 sample_data |> 
-  group_by(order_id, order_hour_of_day) |> 
-  count(order_id) |> 
   plot_ly(
-    x = ~order_hour_of_day,
-    y = ~n,
-    color = ~order_hour_of_day,
-    type = "scatter",
-    mode = "markers",
-    marker = list(opacity = 0.4),
-    colors = "viridis"
+    x = ~factor(reordered), y = ~add_to_cart_order, color = ~factor(reordered),
+    type = "box",
+    showlegend = FALSE,
+    hoverinfo = "y",
+    name = " ",
+    showlegend = FALSE,
+    colors = c("navy","orange"),
+    marker = list(opacity = 0.4)
   ) |> 
   layout(
-    title = "Order Size vs. Time of Day",
-    xaxis = list(title = "Hour of Day"),
-    yaxis = list(title = "Number of Products per Order")
+    title = "Cart Position by Reorder Status",
+    xaxis = list(title = "Item Type",
+                 tickvals = c(0,1),
+                 ticktext = c("New", "Reordered")
+                 ),
+    yaxis = list(title = "Item Added to Cart (Order)")
   )
 ```
 
-Column {data-width=350}
+Column {data-width=400}
 -----------------------------------------------------------------------
 
 ### Chart B
@@ -83,23 +85,21 @@ instacart |>
 
 ```{r}
 sample_data |> 
+  group_by(order_id, order_hour_of_day) |> 
+  count(order_id) |> 
   plot_ly(
-    x = ~factor(reordered), y = ~add_to_cart_order, color = ~factor(reordered),
-    type = "box",
-    showlegend = FALSE,
-    hoverinfo = "y",
-    name = " ",
-    showlegend = FALSE,
-    colors = c("navy","darkred"),
-    marker = list(opacity = 0.4)
+    x = ~order_hour_of_day,
+    y = ~n,
+    color = ~order_hour_of_day,
+    type = "scatter",
+    mode = "markers",
+    marker = list(opacity = 0.4),
+    colors = "magma"
   ) |> 
   layout(
-    title = "Cart Position by Reorder Status",
-    xaxis = list(title = "Item Type",
-                 tickvals = c(0,1),
-                 ticktext = c("New", "Reordered")
-                 ),
-    yaxis = list(title = "Item Added to Cart (Order)")
+    title = "Order Size vs. Time of Day",
+    xaxis = list(title = "Hour of Day"),
+    yaxis = list(title = "Number of Products per Order")
   )
 ```
 
