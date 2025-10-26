@@ -7,10 +7,13 @@ output:
 
 ---
 
+<br>
+
 ## Welcome!
 
 <img src="images/photo.jpeg" style="height:40%;width:50%;">
 
+<br>
 
 ### [About me](about.html)
 
