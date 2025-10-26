@@ -14,134 +14,97 @@ library(plotly)
 
 ```{r}
 data("instacart")
-
-instacart = instacart |> 
-  sample_n(10000)
-
 ```
-
-
-#Plot ideas
-
-- Most popular aisles or departments: Bar plot showing total orders per aisle or department
-- Distribution of products added to cart position: Histogram of add_to_cart_order(do users tend to add certain prodcuts earlier in their cart)
-- Reorder rate by department or aisle: bar plot showing proportion of reordered items in each department
-- Reorder probability by time of day: Line plot of average reordered rate vs. order_hour_of_day
-- Orders by hour of day: bar plot or histogram of order_hour_of_day (when do people shop the most?)
-- Orders by day of the week: Bar plot of order_dow
 
 
 Bar plot showing total orders per aisle or department
 ```{r}
-#total number of orders per aisle
-dept_summary = instacart |> 
-  group_by(department) |> 
-  summarise(total_orders = n()) |> 
-  arrange(desc(total_orders))
-
-plot_ly(
-  data = dept_summary,
-  x = ~reorder(department, total_orders),
-  y = ~total_orders,
-  type = 'bar',
-  color = ~department,
-  colors = "Set1",
-  text = ~paste("Orders:", total_orders),
-  hoverinfo = "text",
-  textposition = "none"  # hides text inside bars
-) |> 
+#total numbers of orders per aisle
+instacart |> 
+  sample_n(10000) |> 
+  count(department) |> 
+  mutate(department = fct_reorder(department,n)) |> 
+  plot_ly(
+    x = ~department, y = ~n, 
+    color = ~department, 
+    type = "bar", 
+    colors = "magma",
+    text = ~paste("Orders:", n),
+    hoverinfo = "text",
+    textposition = "none"
+  ) |> 
   layout(
     title = "Total Orders by Department",
     xaxis = list(title = "Department", tickangle = -45),
-    yaxis = list(title = "Number of Orders"),
-    showlegend = FALSE
+    yaxis = list(title = "Number of Orders")
   )
 
 ```
 
 
 
-What are the most popular items? (Horizontal bar chart)
-top 20 most frequently purchased products
+Scatter plot showing order hour of day vs. number of products in order
 ```{r}
-orders_by_hour = instacart |> 
-  group_by(order_id) |> 
-  summarise(
-    #get the hour for this order (it's the same for all rows in the group)
-    order_hour = first(order_hour_of_day) 
-  ) |> 
-  ungroup()
+#sampling subset of users
+sample_users = instacart |> 
+  distinct(user_id) |> 
+  sample_n(9000)
 
-#count total number of orders for each hour
-plot_data = orders_by_hour |> 
-  count(order_hour, name = "total_orders")
-
-#plot
-plot_ly(
-  data = plot_data,
-  x = ~order_hour,
-  y = ~total_orders,
-  type = 'bar',
-  color = ~order_hour,
-  colors = "Set3",
-  hoverinfo = 'text',
-  textposition = "none",
-  text = ~paste(
-    "Hour:", order_hour,
-    "Total Orders:", format(total_orders, big.mark = ",")
-  )) |> 
-  layout(
-    title = "Peak Shopping Hours",
-    xaxis = list(
-      title = "Hour of Day (0-23)",
-      type = 'category',  
-      tickmode = 'linear'
-    ),
-    yaxis = list(
-      title = "Total Number of Orders"
-    )
-  )
-```
-
-
-
-How do people build their carts
-
-```{r}
-plot_data <- instacart |> 
-  group_by(add_to_cart_order) |> 
-  summarise(
-    reorder_rate = mean(reordered), 
-    total_items = n() 
-  ) |> 
-  filter(add_to_cart_order <= 20) |> 
-  ungroup()
-
-
-plot_ly(
-  data = plot_data,
-  x = ~add_to_cart_order,
-  y = ~reorder_rate,
-  type = 'scatter',
-  mode = 'lines+markers', # A line with markers at each data point
-  hoverinfo = 'text',
-  text = ~paste(
-    "Cart Position:", add_to_cart_order,
-    "Reorder Rate:", paste0(round(reorder_rate * 100, 1), "%"),
-    "Total Items:", format(total_items, big.mark = ",")
-  )) |> 
+sample_data = instacart |> 
+  semi_join(sample_users, by = "user_id")
   
+sample_data |> 
+  group_by(order_id, order_hour_of_day) |> 
+  count(order_id) |> 
+  plot_ly(
+    x = ~order_hour_of_day,
+    y = ~n,
+    color = ~order_hour_of_day,
+    type = "scatter",
+    mode = "markers",
+    marker = list(opacity = 0.4),
+    colors = "viridis"
+  ) |> 
   layout(
-    title = "Reorder Rate vs. Cart Position",
-    xaxis = list(
-      title = "Item Added to Cart (Order)"
-    ),
-    yaxis = list(
-      title = "Reorder Rate (Likelihood of being a reorder)",
-      tickformat = '.0%' 
-    )
+    title = "Order Size vs. Time of Day",
+    xaxis = list(title = "Hour of Day"),
+    yaxis = list(title = "Number of Products per Order")
+  )
+
+```
+
+
+
+Boxplot showing "add to cart" order vs. reorder status
+```{r}
+sample_data |> 
+  plot_ly(
+    x = ~factor(reordered), y = ~add_to_cart_order, color = ~factor(reordered),
+    type = "box",
+    showlegend = FALSE,
+    hoverinfo = "y",
+    name = " ",
+    showlegend = FALSE,
+    colors = c("navy","darkred"),
+    marker = list(opacity = 0.4)
+  ) |> 
+  layout(
+    title = "Cart Position by Reorder Status",
+    xaxis = list(title = "Item Type",
+                 tickvals = c(0,1),
+                 ticktext = c("New", "Reordered")
+                 ),
+    yaxis = list(title = "Item Added to Cart (Order)")
   )
 ```
+
+
+
+
+
+
+
+
 
 
 
